@@ -7,7 +7,7 @@ function buildMetadata(sample) {
     
     // Filter the metadata for the object with the desired sample number
     let sampleObject = metadata.filter((item) => parseInt(sample) === item.id);
-    console.log(sampleObject)
+    
     // Use d3 to select the panel with id of `#sample-metadata`
     let sampleMetadata = d3.select("#sample-metadata");
 
@@ -43,29 +43,67 @@ function buildCharts(sample) {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
 
     // Get the samples field
-    let samples = data.samples
+    let samples = data.samples;
 
     // Filter the samples for the object with the desired sample number
-
+    let sampleObject = samples.filter((item) => item.id === sample)[0];
 
     // Get the otu_ids, otu_labels, and sample_values
-
-
+    let otu_ids = sampleObject.otu_ids;
+    let otu_labels = sampleObject.otu_labels;
+    let sample_values = sampleObject.sample_values;
+    
     // Build a Bubble Chart
+    let traceBubble = {
+      x: otu_ids,
+      y: sample_values,
+      label: otu_labels,
+      mode: "markers",
+      marker: {
+        size: sample_values,
+        color: otu_ids
+      }
+    };
 
+    let dataBubble = [traceBubble]
+
+    let layoutBubble = {
+      title: "Bacteria Cultures Per Sample"
+    }
 
     // Render the Bubble Chart
-
+    Plotly.newPlot("bubble", dataBubble, layoutBubble)
 
     // For the Bar Chart, map the otu_ids to a list of strings for your yticks
+    let yTicks = otu_ids.map(id => id)
+    
+    // Build a Bar 
+    let indices = sampleObject.sample_values.map((value, index) => index);
+    let sortedIds = indices.map(index => sampleObject.otu_ids[index]);
+    let sortedLabels = indices.map(index => sampleObject.otu_labels[index]);
+    let sortedValues = indices.map(index => sampleObject.sample_values[index]);
 
+    let slicedIds = sortedIds.slice(0, 10);
+    let slicedLabels = sortedLabels.slice(0, 10);
+    let slicedValues = sortedValues.slice(0, 10);
 
-    // Build a Bar Chart
+    let traceBar = {
+      type: "bar",
+      x: slicedValues,
+      y: slicedIds,
+      orientation: "h"
+    };
+
+    let dataBar = [traceBar]
+
+    let layoutBar = {
+      title: "Top 10 Bacteria Cultures Found"
+    };
     // Don't forget to slice and reverse the input data appropriately
 
 
     // Render the Bar Chart
-
+    Plotly.newPlot("bar", dataBar, layoutBar)
   });
 }
 
