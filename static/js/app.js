@@ -57,7 +57,7 @@ function buildCharts(sample) {
     let traceBubble = {
       x: otu_ids,
       y: sample_values,
-      label: otu_labels,
+      hovertext: otu_labels,
       mode: "markers",
       marker: {
         size: sample_values,
@@ -68,14 +68,20 @@ function buildCharts(sample) {
     let dataBubble = [traceBubble]
 
     let layoutBubble = {
-      title: "Bacteria Cultures Per Sample"
+      title: "Bacteria Cultures Per Sample",
+      xaxis: {
+        title:"OTU ID"
+      },
+      yaxis: {
+        title: "Number of Bacteria"
+      }
     }
 
     // Render the Bubble Chart
     Plotly.newPlot("bubble", dataBubble, layoutBubble)
 
     // For the Bar Chart, map the otu_ids to a list of strings for your yticks
-    let yTicks = otu_ids.map(id => id)
+    let yTicks = otu_ids.map(id => `OTU ${id}`);
     
     // Build a Bar 
     let indices = sampleObject.sample_values.map((value, index) => index);
@@ -91,13 +97,25 @@ function buildCharts(sample) {
       type: "bar",
       x: slicedValues,
       y: slicedIds,
+      hovertext: slicedLabels,
       orientation: "h"
     };
 
     let dataBar = [traceBar]
 
     let layoutBar = {
-      title: "Top 10 Bacteria Cultures Found"
+      title: "Top 10 Bacteria Cultures Found",
+      xaxis: {
+        title: "Number of Bacteria",
+        nticks: 9,
+        tickmode: "auto"
+      },
+      yaxis: {
+        tickvals: slicedIds,
+        ticktext: yTicks,
+        type: "category",
+        categoryorder: "total ascending"
+      }
     };
     // Don't forget to slice and reverse the input data appropriately
 
