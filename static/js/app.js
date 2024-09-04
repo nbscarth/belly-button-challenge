@@ -27,10 +27,10 @@ function buildMetadata(sample) {
       let wfreq = object.wfreq;
       let sampleString = 
         `ID: ${id} <br>
-        Ethnicity: ${ethnicity} <br>
-        Gender: ${gender} <br>
-        Age: ${age} <br>
-        Location: ${location} <br>
+        ETHNICITY: ${ethnicity} <br>
+        GENDER: ${gender} <br>
+        AGE: ${age} <br>
+        LOCATION: ${location} <br>
         BBTYPE: ${bbtype} <br>
         WFREQ: ${wfreq}`;
       sampleMetadata.append("value").html(sampleString)
@@ -156,7 +156,8 @@ function init() {
 // Function for event listener
 function optionChanged(newSample) {
   // Build charts and metadata panel each time a new sample is selected
-
+  buildMetadata(newSample);
+  buildCharts(newSample);
 }
 
 // Initialize the dashboard
